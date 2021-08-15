@@ -1,4 +1,5 @@
 data.h
 s5l8702_objdump
 s5l8702_builder
+s5l8702_simulator
 *.o

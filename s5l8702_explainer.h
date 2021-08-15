@@ -42,6 +42,7 @@ void free_explainer();
 char* describe_register(uint32_t offset);
 
 // prints a full objdump like explination of an instruction at an address
-void explain_instruction(uint32_t address);
+void explain_instruction_addr(uint32_t address);
+void explain_instruction_inst(instruction cmd);
 
 #endif

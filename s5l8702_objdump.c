@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     uint32_t programSize = get_program_size();
 
     for(int i = 0; i < programSize; i++) {
-        explain_instruction(i*8);
+        explain_instruction_addr(i*8);
     }
 
     free_explainer();

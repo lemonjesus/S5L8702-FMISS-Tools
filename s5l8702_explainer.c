@@ -112,8 +112,7 @@ char* describe_register(uint32_t offset) {
 const char knownInstructions[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x11, 0x13, 0x14};
 uint32_t known = 0;
 
-void explain_instruction(uint32_t address) {
-    instruction cmd = program[address/8];
+void explain_instruction(instruction cmd, uint32_t address) {
     char isTarget = 0;
     char isJump = 0;
     // is this address involved in a jump?
@@ -176,10 +175,10 @@ void explain_instruction(uint32_t address) {
         printf("or r%d = r%d | r%d | 0x%.8X", cmd.arg1, cmd.arg1, cmd.arg2, cmd.imm);
         break;
     case 0x0C:
-        printf("add r%d = r%d + %d", cmd.arg2, cmd.arg1, cmd.imm);
+        printf("add r%d = r%d + %d", cmd.arg1, cmd.arg2, cmd.imm);
         break;
     case 0x0D:
-        printf("subtract r%d = r%d - %d", cmd.arg2, cmd.arg1, cmd.imm);
+        printf("subtract r%d = r%d - %d", cmd.arg1, cmd.arg2, cmd.imm);
         break;
     case 0x0E:
         printf("if r%d != %d, jump to 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
@@ -201,4 +200,13 @@ void explain_instruction(uint32_t address) {
     }
 
     printf("\n");
+}
+
+void explain_instruction_addr(uint32_t address) {
+    instruction cmd = program[address/8];
+    explain_instruction(cmd, address);
+}
+
+void explain_instruction_inst(instruction cmd) {
+    explain_instruction(cmd, 0);
 }
