@@ -13,5 +13,13 @@ The disassembler behaves more like `objdump` in that it prints columns of inform
 ### `s5l8702_builder`
 This isn't an assembler, but rather organizes and formats the instructions correctly based on the writing format in the documentation. It also constructs the preamble and ending bit (error handling?) that don't seem special, but does appear in every part of the firmware. It's far less refined than `objdump` simply because I've been using it in the [Compiler Explorer](https://godbolt.org/) to generate test code quickly.
 
+## OK But Where Is The Code To Disassemble?
+I can't put it here because it's Apple code, but if you have a decrypted NOR EFI bootloader, you can get them at the following locations (and verify them with these hashes):
+ - Erase Page: at: `0x85B0`, length: `0x400`, SHA1: `df1e15b83bc718d72d9fe86f167a1412cd71d8cf`
+ - Read Page: at: `0x89B0`, length: `0xC58`, SHA1: `5d977654e55c04ddbb6b2e0ef5a8b9d04162ef7e`
+ - Read ID: at: `0x9608`, length: `0x210`, SHA1: `8d29b032afdcc550c8ad3b5c9ef800d6fc7af9b0`
+ - Read Page No ECC: at: `0x9818`, length: `0x448`, SHA1: `8e4b2d52d2eb2fec86efe93c6126852bba58d69d`
+ - Write Page: at: `0x9C60`, length: `0x958`, SHA1: `f8b77c1aa4a25ed7b2fae5cf535f79e5c21c06c1`
+
 ## License
 The code, research, documentation, and everything else in this repository is © 2021 by Tucker Osman licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). 

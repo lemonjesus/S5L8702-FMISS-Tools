@@ -267,3 +267,7 @@ For example:
 ```
 0x17040002000008F0
 ```
+
+### `0x18` *Used, Not yet investigated*
+
+### `0x19` *Used, Not yet investigated*
