@@ -1,8 +1,15 @@
-#include "imtui/imtui/imtui.h"
+#include <cstdlib>
+#include <cstdint>
 
-#include "imtui/imtui/imtui-impl-ncurses.h"
+#include "imtui/imtui.h"
+#include "imtui/imtui-impl-ncurses.h"
+#include "imtui/imtui-demo.h"
+#include "imtui/imgui_memory_editor.h"
 
-#include "imtui/imtui/imtui-demo.h"
+uint32_t* vmem;
+uint32_t* regs;
+uint32_t pc = 0;
+static MemoryEditor mem_edit;
 
 int main() {
     IMGUI_CHECKVERSION();
@@ -12,8 +19,10 @@ int main() {
     ImTui_ImplText_Init();
 
     bool demo = true;
-    int nframes = 0;
-    float fval = 1.23f;
+
+    // set up virtual memory, we'll treat this as the base DMA address
+    vmem = (uint32_t*) malloc(0x10000/4);
+    regs = (uint32_t*) malloc(8*sizeof(uint32_t));
 
     while (true) {
         ImTui_ImplNcurses_NewFrame();
@@ -21,24 +30,21 @@ int main() {
 
         ImGui::NewFrame();
 
-        ImGui::SetNextWindowPos(ImVec2(4, 27), ImGuiCond_Once);
-        ImGui::SetNextWindowSize(ImVec2(50.0, 10.0), ImGuiCond_Once);
-        ImGui::Begin("Hello, world!");
-        ImGui::Text("NFrames = %d", nframes++);
-        ImGui::Text("Mouse Pos : x = %g, y = %g", ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y);
-        ImGui::Text("Time per frame %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::Text("Float:");
-        ImGui::SameLine();
-        ImGui::SliderFloat("##float", &fval, 0.0f, 10.0f);
-
-        ImGui::Text("%s", "");
-        if (ImGui::Button("Exit program", { ImGui::GetContentRegionAvail().x, 2 })) {
-            break;
+        if (ImGui::BeginMainMenuBar()) {
+            if (ImGui::BeginMenu("Reset")) {
+                // TODO: reset the simulation
+            }
+            if (ImGui::BeginMenu("Help")) {
+                // TODO: show help
+            }
+            if (ImGui::BeginMenu("Quit")) {
+                break;
+            }
+            ImGui::EndMainMenuBar();
         }
 
-        ImGui::End();
-
-        ImTui::ShowDemoWindow(&demo);
+        // ImTui::ShowDemoWindow(&demo);
+        mem_edit.DrawContents(vmem, 0x10000/4, (size_t) 0x38A00000);
 
         ImGui::Render();
 
