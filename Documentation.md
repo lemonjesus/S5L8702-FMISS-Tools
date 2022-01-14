@@ -28,7 +28,7 @@ Exceptions are noted below. See the assembler for how the bytes get reorganized 
 Sometimes instructions will use their 16-bit immediate to store a memory location. This is offset from the NAND/FMISS DMA Base address (`0x38A00000`)
 
 ## Registers
-There are 8 registers, I've named them `r0` through `r7`. They all seem to be general purpose.
+There are 8 registers, I've named them `r0` through `r7`. They all seem to be general purpose. They might be mapped into memory from `0x38A00C18` to `0x38A00C34` respectively, but that's _currently unconfirmed_.
 
 ## Op-codes
 
