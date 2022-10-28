@@ -3,6 +3,8 @@ This repo is where I'll keep documentation and findings on this specific part of
 
 There are a lot of unanswered questions about how this part of the S5L8702 works, but gaining a better understanding of it will not only help me toward my goal of expanding the iPod Nano 3rd Generation's NAND capacity, but it will also get us closer to a full Rockbox port for the n3g since NAND support is one of the bigger missing pieces of the puzzle.
 
+**This is a work in progress, and as such, might be incomplete or just outright wrong.** These are all educated guesses. Unfortuantely I'm not that educated in the dark arts of mystery instruction set reverse engineering.
+
 ## Building
 See the `Makefile` to see how the tools are built.
 
