@@ -24,4 +24,4 @@ I can't put it here because it's Apple code, but if you have a decrypted NOR EFI
  - Write Page: at: `0x9C60`, length: `0x958`, SHA1: `f8b77c1aa4a25ed7b2fae5cf535f79e5c21c06c1`
 
 ## License
-The code, research, documentation, and everything else in this repository is © 2021 by Tucker Osman licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). 
+The code is GPL 3.0, and the research, documentation, and everything else in this repository is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). 
