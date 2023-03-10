@@ -147,6 +147,25 @@ The specific bits waited for seem slightly out of line with what's documented in
 ### `0x09` *Unknown, possibly unused*
 
 ### `0x0A` AND Registers and an Immediate
+
+This instruction has two forms:
+
+#### Immediate == 0
+
+`AND` the destination register with a source register, saving the result in the destination register. The source register is given in the 16-bit immediate.
+
+For example:
+```
+0x0A06000700000000
+```
+
+could mean:
+```
+r6 = r6 & r7
+```
+
+#### Immediate != 0
+
 `AND` a source register and a value together, saving the result in the destination register. The source register is given in the 16-bit immediate.
 
 For example:
