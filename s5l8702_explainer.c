@@ -182,7 +182,7 @@ void explain_instruction(uint32_t address) {
         printf("subtract r%d = r%d - %d", cmd.arg2, cmd.arg1, cmd.imm);
         break;
     case 0x0E:
-        printf("if r%d != %d, jump to 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
+        printf("if r%d != 0, jump to 0x%.8X", cmd.arg1, cmd.imm);
         break;
     case 0x11:
         printf("store *r%d = r%d", cmd.arg2, cmd.arg1);

@@ -200,17 +200,17 @@ seems to mean:
 r1 = r2 - 4
 ```
 
-### `0x0E` Jump If Not Equal
-If a register does not equal the 16-bit immediate, then jump to the address given by the 32-bit immediate. The jump is absolute, meaning it's relative to the beginning of the bytecode, not relative to the instruction.
+### `0x0E` Jump If Not Zero
+If a register does not equal zero, then jump to the address given by the 32-bit immediate. The jump is absolute, meaning it's relative to the beginning of the bytecode, not relative to the instruction.
 
 For example:
 ```
-0x0E040002000008F0
+0x0E040000000008F0
 ```
 
 seems to mean:
 ```
-if r4 != 2, jump to 0x000008F0
+if r4 != 0, jump to 0x000008F0
 ```
 
 ### `0x0F` *Unknown, possibly unused*
