@@ -260,12 +260,17 @@ r3 = r2 >> 1
 There are cases where the shift value is zero, which would make this just an assignment which makes no sense. It's also unclear if this is a logical shift or an arithmatic shift.
 
 
-### `0x17` Some kind of jump *(unconfirmed)*
-Based on how it looks the same as the other jump instruction, this one is probably some kind of jump too. But I've tested the basics (`jeq`, `jgt`, `jlt`, etc.) and I cant quite figure out what this one does. Maybe it's some kind of "jump if zero" but that has yet to be tested.
+### `0x17` Jump If Zero
+If a register equals zero, then jump to the address given by the 32-bit immediate. The jump is absolute, meaning it's relative to the beginning of the bytecode, not relative to the instruction.
 
 For example:
 ```
-0x17040002000008F0
+0x17040000000008F0
+```
+
+seems to mean:
+```
+if r4 == 0, jump to 0x000008F0
 ```
 
 ### `0x18` *Used, Not yet investigated*
