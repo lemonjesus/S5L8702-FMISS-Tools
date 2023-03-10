@@ -170,7 +170,7 @@ void explain_instruction(uint32_t address) {
         printf("wait for flash ready on FMCSTAT[%d]", cmd.arg1);
         break;
     case 0x0A:
-        printf("and r%d = r%d & r%d & 0x%.8X", cmd.arg1, cmd.arg1, cmd.arg2, cmd.imm);
+        printf("and r%d = r%d & 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
         break;
     case 0x0B:
         printf("or r%d = r%d | 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
