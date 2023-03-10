@@ -146,8 +146,8 @@ The specific bits waited for seem slightly out of line with what's documented in
 ### `0x08` *Unknown, possibly unused*
 ### `0x09` *Unknown, possibly unused*
 
-### `0x0A` AND Two Registers and an Immediate
-`AND` two registers (one of which is the destination register) and a bitmask together. The second register is given in the 16-bit immediate.
+### `0x0A` AND Registers and an Immediate
+`AND` a source register and a value together, saving the result in the destination register. The source register is given in the 16-bit immediate.
 
 For example:
 ```
@@ -156,12 +156,12 @@ For example:
 
 could mean:
 ```
-r6 = r6 & r7 & 0xFFFFFF00
+r6 = r7 & 0xFFFFFF00
 ```
 Sometimes there are `AND`s with a null bitmask `0x00000000`. It's unclear if that means the bitmask is disabled in this case (then why wouldn't you just set the bitmask to `0xFFFFFFFF`) or that's intentional for setting the destination to zero (but then why not just write a zero immediate?). It's weird, so I'm not so sure about this one.
 
-### `0x0B` OR Two Registers and an Immediate
-`OR` two registers (one of which is the destination register) and a bitmask together. The second register is given in the 16-bit immediate.
+### `0x0B` OR Register and an Immediate
+`OR` a source register and a value together, saving the result in the destination register. The source register is given in the 16-bit immediate.
 
 For example:
 ```
@@ -170,9 +170,8 @@ For example:
 
 seems to mean:
 ```
-r6 = r6 | r7 | 0xFFFFFF00
+r6 = r7 | 0xFFFFFF00
 ```
-This one makes sense to have two different registers and a null bitmask, or the same register twice and a non-null bitmask. I haven't seen a case where the registers are the same and the bitmask is null, as that would just be a noop.
 
 ### `0x0C` Add a Register and an Immediate 
 Adds the 32-bit immediate to the content stored in the register referenced by the 16-bit immediate and stores it in the register given in the 8-bit immediate.
