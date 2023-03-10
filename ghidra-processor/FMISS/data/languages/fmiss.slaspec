@@ -1,0 +1,114 @@
+define endian=little; define alignment=8;
+define space ram type=ram_space size=4 default;
+define space register type=register_space size=4;
+
+define register offset=0 size=4 [
+    r0 r1 r2 r3 r4 r5 r6 r7
+    # fake registers follow
+    pc sp
+];
+
+define token instr(64)
+    imm16 = (0, 15)
+    rs = (0, 2)
+    rd = (16, 18)
+    imm8 = (16, 23)
+    opcode = (24, 31)
+    imm32 = (32, 63)
+;
+
+attach variables [ rd rs ] [
+    r0 r1 r2 r3 r4 r5 r6 r7
+];
+
+:terminate is opcode = 0 {
+    local tmp:4 = 0xffffffff;
+    return [tmp];
+}
+
+:mov target, imm32 is opcode = 1 & imm32 & imm16 [ target=0x38a00000+imm16; ] {
+    *target:4 = imm32:4;
+}
+
+:mov target, rd is opcode = 2 & rd & imm16 [ target=0x38a00000+imm16; ] {
+    *target:4 = rd:4;
+}
+
+:mov rd, [rs] is opcode = 3 & rd & rs {
+    rd = *rs;
+}
+
+:mov rd, target is opcode = 4 & rd & imm32=0xffffffff & imm16 [ target=0x38a00000+imm16; ] {
+    rd = *target:4;
+}
+
+:and rd, target, imm32 is opcode = 4 & rd & imm32 & imm16 [ target=0x38a00000+imm16; ] {
+    rd = *target:4 & imm32:4;
+}
+
+:mov rd, imm32 is opcode = 5 & rd & imm32 {
+    rd = imm32:4;
+}
+
+:mov rd, rs is opcode = 6 & rd & rs {
+    rd = rs;
+}
+
+:wait imm8 is opcode = 7 & imm8 {
+    # not exactly correct, but good enough for now.
+    local addr:4 = 0x38a00048;
+    local v:4;
+    local sel:4 = (1:4 << zext(imm8:2));
+    <loopstart>
+    v = *addr;
+    if ((v & sel) != 0:4) goto <loopstart>;
+
+}
+
+:and rd, rs is opcode = 0xa & rd & rs & imm32=0 {
+    rd = rs & rd;
+}
+
+:and rd, rs, imm32 is opcode = 0xa & rd & rs & imm32 {
+    rd = rs & imm32:4;
+}
+
+:or rd, rs is opcode = 0xb & rd & rs & imm32=0 {
+    rd = rs | rd;
+}
+
+:or rd, rs, imm32 is opcode = 0xb & rd & rs & imm32 {
+    rd = rs | imm32:4;
+}
+
+:add rd, rs, imm32 is opcode=0xc & rd & rs & imm32 {
+    rd = rs + imm32:4;
+}
+
+:sub rd, rs, imm32 is opcode=0xd & rd & rs & imm32 {
+    rd = rs - imm32:4;
+}
+
+jumptarget: imm32 is imm32 { export *[ram]:4 imm32; }
+
+:jnz rd, jumptarget is opcode=0xe & rd & jumptarget {
+    if (rd != 0) goto jumptarget;
+}
+
+:mov [rs], rd is opcode=0x11 & rs & rd {
+    *rs = rd;
+}
+
+:shl rd, rs, imm32 is opcode=0x13 & rd & rs & imm32 {
+    rd = rs << imm32:4;
+}
+
+:shr rd, rs, imm32 is opcode=0x14 & rd & rs & imm32 {
+    rd = rs >> imm32:4;
+}
+
+
+:jz rd, jumptarget is opcode=0x17 & rd & jumptarget {
+    if (rd == 0) goto jumptarget;
+}
+
