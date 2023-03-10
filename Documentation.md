@@ -177,9 +177,27 @@ could mean:
 ```
 r6 = r7 & 0xFFFFFF00
 ```
-Sometimes there are `AND`s with a null bitmask `0x00000000`. It's unclear if that means the bitmask is disabled in this case (then why wouldn't you just set the bitmask to `0xFFFFFFFF`) or that's intentional for setting the destination to zero (but then why not just write a zero immediate?). It's weird, so I'm not so sure about this one.
 
 ### `0x0B` OR Register and an Immediate
+
+This instruction has two forms:
+
+#### Immediate == 0
+
+`OR` the destinations register with a source register, saving the result in the destination register. The source register is given in the 16-bit immediate.
+
+For example:
+```
+0x0B06000700000000
+```
+
+seems to mean:
+```
+r6 = r6 | r7
+```
+
+#### Immediate != 0
+
 `OR` a source register and a value together, saving the result in the destination register. The source register is given in the 16-bit immediate.
 
 For example:

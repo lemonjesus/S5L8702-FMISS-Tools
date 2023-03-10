@@ -176,7 +176,10 @@ void explain_instruction(uint32_t address) {
             printf("and r%d = r%d & 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
         break;
     case 0x0B:
-        printf("or r%d = r%d | 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
+        if (cmd.imm == 0)
+            printf("or r%d = r%d | r%d", cmd.arg1, cmd.arg1, cmd.arg2);
+        else
+            printf("or r%d = r%d | 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
         break;
     case 0x0C:
         printf("add r%d = r%d + %d", cmd.arg2, cmd.arg1, cmd.imm);
