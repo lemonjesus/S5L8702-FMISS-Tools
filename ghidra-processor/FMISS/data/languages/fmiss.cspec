@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<compiler_spec>
+  <data_organization>
+        <pointer_size value="4"/>
+        <float_size value="4" />
+        <double_size value="8" />
+        <long_double_size value="8" />
+        <size_alignment_map>
+			<entry size="1" alignment="1" />
+			<entry size="2" alignment="2" />
+			<entry size="4" alignment="4" />
+			<entry size="8" alignment="8" />
+		</size_alignment_map>
+  </data_organization>
+  <stackpointer register="sp" space="ram" growth="positive"/>
+  <default_proto>
+    <prototype name="__stdcall" extrapop="4" stackshift="4">
+      <input>
+      </input>
+      <output>
+      </output>
+      <unaffected>
+        <register name="sp"/>
+      </unaffected>
+    </prototype>
+  </default_proto>
+
+  <funcptr align="2"/>
+  <global>
+    <range space="ram"/>
+    <range space="register" first="0x2000" last="0x200f"/>
+  </global>
+</compiler_spec>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language_definitions>
+    <language processor="FMISS"
+              endian="little"
+              size="32"
+              variant="default"
+              version="1.0"
+              slafile="fmiss.sla"
+              processorspec="fmiss.pspec"
+              id="FMISS:LE:32:default">
+        <description>S5L87XX Flash Controller Bytecode</description>
+        <compiler name="default" spec="fmiss.cspec" id="default"/>
+    </language>
+</language_definitions>
+
