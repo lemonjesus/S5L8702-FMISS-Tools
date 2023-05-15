@@ -74,25 +74,16 @@ void resolveJumps() {
 char* describe_register(uint32_t offset) {
     if(offset < 0x400) {
         switch(offset) {
-        case 0x00: return "FMC_CTRL0";
-        case 0x04: return "FMC_CTRL1";
-        case 0x08: return "FMC_CMD";
-        case 0x0C: return "FMC_ADDR0";
-        case 0x10: return "FMC_ADDR1";
-        // case 0x14: return "FMC_ADDR2";
-        // case 0x18: return "FMC_ADDR3";
-        // case 0x1C: return "FMC_ADDR4";
-        // case 0x20: return "FMC_ADDR5";
-        // case 0x24: return "FMC_ADDR6";
-        // case 0x28: return "FMC_ADDR7";
-        case 0x2C: return "FMC_ANUM";
-        case 0x30: return "FMC_DNUM";
-        case 0x34: return "FMC_DATAW0";
-        case 0x38: return "FMC_DATAW1";
-        case 0x3C: return "FMC_DATAw2";
-        case 0x40: return "FMC_DATAW3";
-        case 0x48: return "FMC_STAT";
-        case 0x80: return "FMC_FIFO";
+        case 0x00: return "FMC_CTRL0";         // confirmed, although the bits are not fully understood
+        case 0x04: return "FMC_CTRL1";         // confirmed, although the bits are not fully understood
+        case 0x08: return "FMC_CMD";           // confirmed
+        case 0x0C: return "FMC_ADDR0";         // confirmed
+        case 0x10: return "FMC_ADDR1";         // confirmed, although there could be more as the S5L8700 datasheet specifies many
+        case 0x2C: return "FMC_ANUM";          // mostly confirmed based on usage
+        case 0x30: return "FMC_DNUM";          // unclear, but likely the number of bytes to read/write
+        case 0x34: return "FMC_DESTBUF";       // read page code puts the destination buffer address here
+        case 0x48: return "FMC_STAT";          // confirmed, although the bits are not fully understood
+        case 0x60 ... 0x68: return "FMC_FIFO"; // confirmed, although the FIFO is likely larger than this
         default: return "FMC_UNKNOWN";
         }
     } else if(offset >= 0x800 && offset < 0xC00) {
