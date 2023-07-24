@@ -159,12 +159,11 @@ The specific bits waited for seem slightly out of line with what's documented in
 
 This is the last unconfirmed instruction that's used in any production FMISS programs.
 
-### `0x0A` AND Registers and an Immediate
+### `0x0A` AND
 
 This instruction has two forms:
 
 #### Immediate == 0
-
 `AND` the destination register with a source register, saving the result in the destination register. The source register is given in the 16-bit immediate.
 
 For example:
@@ -178,7 +177,6 @@ r6 = r6 & r7
 ```
 
 #### Immediate != 0
-
 `AND` a source register and a value together, saving the result in the destination register. The source register is given in the 16-bit immediate.
 
 For example:
@@ -191,12 +189,10 @@ could mean:
 r6 = r7 & 0xFFFFFF00
 ```
 
-### `0x0B` OR Register and an Immediate
-
+### `0x0B` OR
 This instruction has two forms:
 
 #### Immediate == 0
-
 `OR` the destinations register with a source register, saving the result in the destination register. The source register is given in the 16-bit immediate.
 
 For example:
@@ -210,7 +206,6 @@ r6 = r6 | r7
 ```
 
 #### Immediate != 0
-
 `OR` a source register and a value together, saving the result in the destination register. The source register is given in the 16-bit immediate.
 
 For example:
@@ -223,7 +218,23 @@ seems to mean:
 r6 = r7 | 0xFFFFFF00
 ```
 
-### `0x0C` Add a Register and an Immediate 
+### `0x0C` Add 
+This instruction has two forms:
+
+#### Immediate == 0
+Adds the number stored in the source register to the number in the destination register.
+
+For example:
+```
+0x0C01000200000000
+```
+
+seems to mean:
+```
+r1 += r2
+```
+
+#### Immediate != 0
 Adds the 32-bit immediate to the content stored in the register referenced by the 16-bit immediate and stores it in the register given in the 8-bit immediate.
 
 For example:
@@ -236,7 +247,23 @@ seems to mean:
 r1 = r2 + 4
 ```
 
-### `0x0D` Subtract an Immediate from a Register
+### `0x0D` Subtract
+This instruction has two forms:
+
+#### Immediate == 0
+Subtracts the number stored in the source register from the number in the destination register.
+
+For example:
+```
+0x0D01000200000000
+```
+
+seems to mean:
+```
+r1 -= r2
+```
+
+#### Immediate != 0
 Subtracts the 32-bit immediate from the content stored in the register referenced by the 16-bit immediate and stores it in the register given in the 8-bit immediate.
 
 For example:
@@ -275,7 +302,23 @@ seems to mean:
 *r7 = r0
 ```
 
-### `0x13` Left Shift a Register by an Immediate
+### `0x13` Left Shift
+This instruction has two forms:
+
+#### Immediate == 0
+Left shifts the destination register by the value given in the source register.
+
+For example:
+```
+0x1303000200000000
+```
+
+seems to mean:
+```
+r3 <<= r2
+```
+
+#### Immediate != 0
 Left shifts a register given by the 16-bit immediate by the 32-bit immediate and saves it to the register given by the 8-bit immediate.
 
 For example:
@@ -289,7 +332,23 @@ r3 = r2 << 1
 ```
 There are cases where the shift value is zero, which would make this just an assignment which makes no sense.
 
-### `0x14` Right Shift a Register by an Immediate
+### `0x14` Right Shift
+This instruction has two forms:
+
+#### Immediate == 0
+Right shifts the destination register by the value given in the source register.
+
+For example:
+```
+0x1403000200000000
+```
+
+seems to mean:
+```
+r3 >>= r2
+```
+
+#### Immediate != 0
 Right shifts a register given by the 16-bit immediate by the 32-bit immediate and saves it to the register given by the 8-bit immediate.
 
 For example:

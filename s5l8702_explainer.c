@@ -173,10 +173,18 @@ void explain_instruction(uint32_t address) {
             printf("or r%d = r%d | 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
         break;
     case 0x0C:
-        printf("add r%d = r%d + %d", cmd.arg2, cmd.arg1, cmd.imm);
+        if (cmd.imm == 0) {
+            printf("add r%d = r%d + r%d", cmd.arg1, cmd.arg1, cmd.arg2);
+        } else {
+            printf("add r%d = r%d + 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
+        }
         break;
     case 0x0D:
-        printf("subtract r%d = r%d - %d", cmd.arg2, cmd.arg1, cmd.imm);
+        if (cmd.imm == 0) {
+            printf("subtract r%d = r%d - r%d", cmd.arg1, cmd.arg1, cmd.arg2);
+        } else {
+            printf("subtract r%d = r%d - 0x%.8X", cmd.arg1, cmd.arg2, cmd.imm);
+        }
         break;
     case 0x0E:
         printf("if r%d != 0, jump to 0x%.8X", cmd.arg1, cmd.imm);
@@ -185,10 +193,18 @@ void explain_instruction(uint32_t address) {
         printf("store *r%d = r%d", cmd.arg2, cmd.arg1);
         break;
     case 0x13:
-        printf("lshift r%d = r%d << %d", cmd.arg1, cmd.arg2, cmd.imm);
+        if (cmd.imm == 0) {
+            printf("lshift r%d = r%d << r%d", cmd.arg1, cmd.arg1, cmd.arg2);
+        } else {
+            printf("lshift r%d = r%d << %d", cmd.arg1, cmd.arg2, cmd.imm);
+        }
         break;
     case 0x14:
-        printf("rshift r%d = r%d >> %d", cmd.arg1, cmd.arg2, cmd.imm);
+        if (cmd.imm == 0) {
+            printf("rshift r%d = r%d >> r%d", cmd.arg1, cmd.arg1, cmd.arg2);
+        } else {
+            printf("rshift r%d = r%d >> %d", cmd.arg1, cmd.arg2, cmd.imm);
+        }
         break;
     case 0x17:
         printf("if r%d == 0, jump to 0x%.8X", cmd.arg1, cmd.imm);

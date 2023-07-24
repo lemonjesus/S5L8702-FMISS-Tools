@@ -13,20 +13,17 @@ void pinst(uint64_t inst) {
 int main() {
     std::vector<uint64_t> instructions;
 
-    // To run this particular configuration, replace the Read ID code with what this program prints out.
-    // Read in params (r5 = pointer to bank number array, r6 = pointer to bank count int (8), r7 = pointer to dest array for ids)
-    instructions.push_back(0x04070D08FFFFFFFF); // read r7 = *(0D08) UNKNOWN
-    instructions.push_back(0x04060D0CFFFFFFFF); // read r6 = *(0D0C) UNKNOWN
-    instructions.push_back(0x04050D10FFFFFFFF); // read r5 = *(0D10) UNKNOWN
+    instructions.push_back(0x04070D08FFFFFFFF);	// read r7 = *(0D08) FMIDATA_UNKNOWN
+    instructions.push_back(0x04060D0CFFFFFFFF);	// read r6 = *(0D0C) FMIDATA_UNKNOWN
+    instructions.push_back(0x04050D10FFFFFFFF);	// read r5 = *(0D10) FMIDATA_UNKNOWN
 
-    instructions.push_back(0x0504000000000D00); // r4 = 0x00000D00
-    instructions.push_back(0x0C06000600000008); // r6 = r6 + 8
-    instructions.push_back(0x1906000400000000); // write *(0D00) = r6
-    instructions.push_back(0x18000004FFFFFFFF); // read r0 = *(0D00)
+    instructions.push_back(0x0302000500000000);	// r0 = 6
+    instructions.push_back(0x0503000000000001);	// r2 = 5
+    instructions.push_back(0x1303000200000000); // r0 >>= r2
+    instructions.push_back(0x1300000300000001);
 
     // read it into the dest buffer
     instructions.push_back(0x1100000700000000); // store *r7 = r0
-    // we expect the number 16 out of this.
     
     // build and output the program, including preamble and exception handler(?)
     uint32_t progsize = (instructions.size()+5) * 8;
