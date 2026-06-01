@@ -2,7 +2,7 @@
 The instructions that are confirmed below were confirmed by testing simple sequences and extracting the value into the NAND_LBA to read in the diagnostic menu as I've been doing with the NAND ID previously. I haven't figured out all of the instructions, but across all five subroutines found in the EFI firmware, this `objdump` currently achieves 89.7% coverage of used instructions.
 
 ## Memory Regions and What They're Used For
-The NAND DMA space can be broken up into several regions that do/are used for different things. All addresses below are offsets from the base address `0x38A00000` and extend until the next offset listed. These are educated guesses based on the code that uses them, and are not confirmed by any means.
+The NAND MMIO space can be broken up into several regions that do/are used for different things. All addresses below are offsets from the base address `0x38A00000` and extend until the next offset listed. These are educated guesses based on the code that uses them, and are not confirmed by any means.
 
 * `0x0000` - NAND Controller registers. Seldom directly written to by the firmware, the FMISS layer uses these to control the NAND controller.
 * `0x0400` - Possibly a second NAND controller? _Very unconfirmed._
@@ -37,9 +37,9 @@ Exceptions are noted below. See the assembler for how the bytes get reorganized 
 Some operands are memory locations, but the kind of memory location differs between instructions. I just came up with these names to differentiate between the two kinds of memory parameters:
 
  * **RAM Addresses** refer to a location in RAM. These are 32-bit addresses that usually start with `0x09******` or `0x89******`. These pointers are provided by the code that initiates the execution of FMISS.
- * **DMA Offset Addresses** refer to a location in the NAND DMA memory space. These are usually 16-bit values that are added to the NAND DMA Base address (`0x38A00000`) to get the actual address. These are used for reading and writing to NAND registers or to FMISS memory (unconfirmed if this is what we should call it, but it's how parameters are passed into the FMISS layer, usually starting with `0x0D**` or FMISS Memory as mentioned above).
+ * **MMIO Offset Addresses** refer to a location in the NAND MMIO space. These are usually 16-bit values that are added to the NAND MMIO base address (`0x38A00000`) to get the actual address. These are used for reading and writing to NAND registers or to FMISS memory (unconfirmed if this is what we should call it, but it's how parameters are passed into the FMISS layer, usually starting with `0x0D**` or FMISS Memory as mentioned above).
 
-For example, the difference between instructions `0x11` and `0x19` is the kind of memory location that the provided register points to. `0x11` uses a RAM address, while `0x19` uses a DMA offset address.
+For example, the difference between instructions `0x11` and `0x19` is the kind of memory location that the provided register points to. `0x11` uses a RAM address, while `0x19` uses an MMIO offset address.
 
 ## Registers
 There are 8 registers, I've named them `r0` through `r7`. They all seem to be general purpose. They might be mapped into memory from `0x38A00C18` to `0x38A00C34` respectively, but that's _currently unconfirmed_.
@@ -49,8 +49,8 @@ There are 8 registers, I've named them `r0` through `r7`. They all seem to be ge
 ### `0x00` RETURN or TERMINATE *(mostly confirmed)*
 This instruction, always without parameters, seems to indicate that the bytecode is finished executing. At the end of normal program flow, an `0x0000000000000000` is seen.
 
-### `0x01` Write Immediate to DMA Memory
-Used to write an immediate value to a memory location relative to the DMA base address. This is often used to write directly to NAND controller registers.
+### `0x01` Write Immediate to MMIO Space
+Used to write an immediate value to a memory location relative to the MMIO base address. This is often used to write directly to NAND controller registers.
 
 For example:
 ```
@@ -62,8 +62,8 @@ seems to mean:
 *(0x38A00030) = 0x000001FF
 ```
 
-### `0x02` Store Register Value to DMA Memory Given by Immediate Offset
-Used to write register contents to a memory location relative to the DMA base address. Compare to `0x19` which takes the offset from a register instead of an immediate.
+### `0x02` Store Register Value to MMIO Space Given by Immediate Offset
+Used to write register contents to a memory location relative to the MMIO base address. Compare to `0x19` which takes the offset from a register instead of an immediate.
 
 For example:
 ```
@@ -92,8 +92,8 @@ r0 = *(r1)
 
 If you try to dereference something that isn't a valid pointer, or points to an unreadable spot of memory, the iPod will lock up.
 
-### `0x04` Read from DMA Memory into Register
-Read a value from a memory location relative to the DMA base address.
+### `0x04` Read from MMIO Space into Register
+Read a value from a memory location relative to the MMIO base address.
 
 For example:
 ```
@@ -290,7 +290,7 @@ if r4 != 0, jump to 0x000008F0
 ```
 
 ### `0x11` Store a Register Value to a RAM Memory Location Pointed to by a Register
-This instruction saves a value to a place in memory pointed to by another register. The address in the destination register must be an address in RAM, not in the NAND DMA region.
+This instruction saves a value to a place in memory pointed to by another register. The address in the destination register must be an address in RAM, not an offset into the NAND MMIO region.
 
 For example:
 ```
@@ -376,8 +376,8 @@ seems to mean:
 if r4 == 0, jump to 0x000008F0
 ```
 
-### `0x18` Load Register Value from DMA Memory Given by Offset in a Register
-This instruction loads a value from a DMA offset given by the register specified in the 16-bit field. Compare to `0x04` which uses the 16-bit immediate to specify the offset.
+### `0x18` Load from MMIO Space Given by Offset in a Register
+This instruction loads a value from an MMIO offset given by the register specified in the 16-bit field. Compare to `0x04` which uses the 16-bit immediate to specify the offset.
 
 For example:
 ```
@@ -391,8 +391,8 @@ seems to mean:
 
 If `r4` is `0xD10` then `r2` would be loaded from `0x38A00D10`.
 
-### `0x19` Store Register Value to DMA Memory Given by Offset in a Register
-This instruction stores a value to a DMA offset given by the register specified in the 16-bit field. The address in the destination register must be an offset into the NAND DMA region. Compare to `0x02` which uses the 16-bit immediate to specify the offset, and to `0x11` which expects the pointer to be in RAM.
+### `0x19` Store to MMIO Space Given by Offset in a Register
+This instruction stores a value to an MMIO offset given by the register specified in the 16-bit field. The address in the destination register must be an offset into the NAND MMIO region. Compare to `0x02` which uses the 16-bit immediate to specify the offset, and to `0x11` which expects the pointer to be in RAM.
 
 For example:
 ```
