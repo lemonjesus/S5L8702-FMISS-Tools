@@ -1,6 +1,11 @@
 # Documentation
 The instructions that are confirmed below were confirmed by testing simple sequences and extracting the value into the NAND_LBA to read in the diagnostic menu as I've been doing with the NAND ID previously. I haven't figured out all of the instructions, but across all five subroutines found in the EFI firmware, this `objdump` currently achieves 89.7% coverage of used instructions.
 
+How this ISA sits on the Nano 3G NAND (FMC vs FMISS, chip ids, 4 GB vs
+8 GB, Whimory) is in [NAND.md](NAND.md). The last production opcode that
+was still a guess here is `0x07`; the BootROM ready-wait / NANDReadPage
+path and the Rockbox FMC driver poll the same `FMCSTAT` bits from ARM.
+
 ## Memory Regions and What They're Used For
 The NAND DMA space can be broken up into several regions that do/are used for different things. All addresses below are offsets from the base address `0x38A00000` and extend until the next offset listed. These are educated guesses based on the code that uses them, and are not confirmed by any means.
 
@@ -134,30 +139,30 @@ r0 = r1
 ```
 The 32-bit immediate doesn't seem to be used, but that's *unconfirmed*.
 
-### `0x07` Wait for NAND Status Bit to be Set *(very unconfirmed)*
-This one is a wild guess based on when it's used. I think it waits for a certain bit in the FMCSTATUS register of the NAND peripheral to be set, but I don't know for sure.
+### `0x07` Wait for NAND Status Bit to be Set *(confirmed)*
+Waits until a bit in `FMCSTAT` (`0x38A00048`) is set. Apple's BootROM
+does the same poll from ARM (`0x20009614` ready wait, and inside
+`NANDReadPage` at `0x20009910`). The instruction still blocks; the
+encoding is just "which status bit", not a second ALU format.
 
 For example:
 ```
 0x0701000000000000
 ```
 
-could mean:
+means:
 ```
-wait for flash ready on FMCSTAT[1]
+wait until FMCSTAT[1] is set
 ```
-but the format of the instruction would be wildly different from all of the other ones, as well as the fact that it blocks.
 
-The specific bits waited for seem slightly out of line with what's documented in the datasheet for the S5L8700X. Here are my current guesses:
+The bit numbers do not line up cleanly with the S5L8700X datasheet. Current guesses, still from usage:
 
-* `FMCSTAT[0]` - wait for command transfer completion?
-* `FMCSTAT[1]` - wait for address transfer completion?
-* `FMCSTAT[2]` - unknown, used after reading, maybe the status of a FIFO?
-* `FMCSTAT[3]` - wait for data transfer completion?
-* `FMCSTAT[4]` - wait for ECC completion?
-* `FMCSTAT[5]` - unknown, used before writing to unknown `0xC**` registers
-
-This is the last unconfirmed instruction that's used in any production FMISS programs.
+* `FMCSTAT[0]` - command transfer complete
+* `FMCSTAT[1]` - address transfer complete
+* `FMCSTAT[2]` - used after reading (FIFO / data ready)
+* `FMCSTAT[3]` - data transfer complete
+* `FMCSTAT[4]` - ECC complete
+* `FMCSTAT[5]` - used before writes to the `0xC**` window
 
 ### `0x0A` AND
 
