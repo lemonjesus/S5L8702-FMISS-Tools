@@ -2,6 +2,8 @@ define endian=little; define alignment=8;
 define space ram type=ram_space size=4 default;
 define space register type=register_space size=4;
 
+define pcodeop fmc_wait;
+
 define register offset=0 size=4 [
     r0 r1 r2 r3 r4 r5 r6 r7
     # fake registers follow
@@ -35,7 +37,7 @@ attach variables [ rd rs ] [
 }
 
 :mov rd, [rs] is opcode = 3 & rd & rs {
-    rd = *rs;
+    rd = *:4 rs;
 }
 
 :mov rd, target is opcode = 4 & rd & imm32=0xffffffff & imm16 [ target=0x38a00000+imm16; ] {
@@ -55,14 +57,9 @@ attach variables [ rd rs ] [
 }
 
 :wait imm8 is opcode = 7 & imm8 {
-    # not exactly correct, but good enough for now.
-    local addr:4 = 0x38a00048;
-    local v:4;
-    local sel:4 = (1:4 << zext(imm8:2));
-    <loopstart>
-    v = *addr;
-    if ((v & sel) != 0:4) goto <loopstart>;
-
+    # blocks until FMCSTAT (0x38a00048) bit imm8 is set. Modeled as a userop: an inline
+    # polling loop on non-volatile memory decompiles to an infinite loop.
+    fmc_wait(imm8:1);
 }
 
 :and rd, rs is opcode = 0xa & rd & rs & imm32=0 {
@@ -81,8 +78,16 @@ attach variables [ rd rs ] [
     rd = rs | imm32:4;
 }
 
+:add rd, rs is opcode=0xc & rd & rs & imm32=0 {
+    rd = rd + rs;
+}
+
 :add rd, rs, imm32 is opcode=0xc & rd & rs & imm32 {
     rd = rs + imm32:4;
+}
+
+:sub rd, rs is opcode=0xd & rd & rs & imm32=0 {
+    rd = rd - rs;
 }
 
 :sub rd, rs, imm32 is opcode=0xd & rd & rs & imm32 {
@@ -96,11 +101,19 @@ jumptarget: imm32 is imm32 { export *[ram]:4 imm32; }
 }
 
 :mov [rs], rd is opcode=0x11 & rs & rd {
-    *rs = rd;
+    *:4 rs = rd;
+}
+
+:shl rd, rs is opcode=0x13 & rd & rs & imm32=0 {
+    rd = rd << rs;
 }
 
 :shl rd, rs, imm32 is opcode=0x13 & rd & rs & imm32 {
     rd = rs << imm32:4;
+}
+
+:shr rd, rs is opcode=0x14 & rd & rs & imm32=0 {
+    rd = rd >> rs;
 }
 
 :shr rd, rs, imm32 is opcode=0x14 & rd & rs & imm32 {
@@ -112,3 +125,14 @@ jumptarget: imm32 is imm32 { export *[ram]:4 imm32; }
     if (rd == 0) goto jumptarget;
 }
 
+
+# MMIO access with the offset taken from a register (offset is relative to 0x38a00000)
+:mmio.ld rd, [rs] is opcode=0x18 & rd & rs {
+    local a:4 = 0x38a00000 + rs;
+    rd = *:4 a;
+}
+
+:mmio.st [rs], rd is opcode=0x19 & rd & rs {
+    local a:4 = 0x38a00000 + rs;
+    *:4 a = rd;
+}

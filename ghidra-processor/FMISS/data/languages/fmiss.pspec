@@ -2,4 +2,19 @@
 
 <processor_spec>
   <programcounter register="pc"/>
+  <default_symbols>
+    <symbol name="FMC_CTRL0"   address="ram:0x38a00000"/>
+    <symbol name="FMC_CTRL1"   address="ram:0x38a00004"/>
+    <symbol name="FMC_CMD"     address="ram:0x38a00008"/>
+    <symbol name="FMC_ADDR0"   address="ram:0x38a0000c"/>
+    <symbol name="FMC_ADDR1"   address="ram:0x38a00010"/>
+    <symbol name="FMC_ANUM"    address="ram:0x38a0002c"/>
+    <symbol name="FMC_DNUM"    address="ram:0x38a00030"/>
+    <symbol name="FMC_DESTBUF" address="ram:0x38a00034"/>
+    <symbol name="FMC_STAT"    address="ram:0x38a00048"/>
+    <symbol name="FMC_FIFO"    address="ram:0x38a00060"/>
+  </default_symbols>
+  <default_memory_blocks>
+    <memory_block name="NAND_MMIO" start_address="ram:0x38a00000" length="0x1000" mode="rwv" initialized="false"/>
+  </default_memory_blocks>
 </processor_spec>

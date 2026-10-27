@@ -391,7 +391,7 @@ For example:
 
 seems to mean:
 ```
-*r4 = r2
+r2 = *(0x38A00000 + r4)
 ```
 
 If `r4` is `0xD10` then `r2` would be loaded from `0x38A00D10`.
