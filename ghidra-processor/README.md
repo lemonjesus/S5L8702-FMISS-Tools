@@ -15,3 +15,6 @@ Notes on the semantics:
 * `mmio.ld`/`mmio.st` take an MMIO *offset* from a register; `mov [rs], rd` /
   `mov rd, [rs]` take a RAM pointer.
 * `add`/`sub`/`shl`/`shr` with a zero immediate use the form `rd = rd op rs`.
+
+## License
+This Ghidra processor module is licensed under the MIT License; see [LICENSE](LICENSE).
